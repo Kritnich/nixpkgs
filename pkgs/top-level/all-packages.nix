@@ -24847,4 +24847,5 @@ in
 
   wifi-password = callPackage ../os-specific/darwin/wifi-password {};
 
+  bcnc = python3Packages.callPackage ../applications/science/misc/bcnc {};
 }
