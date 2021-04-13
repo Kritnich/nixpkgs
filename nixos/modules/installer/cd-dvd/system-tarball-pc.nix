@@ -112,10 +112,7 @@ in
   systemd.services.openssh.wantedBy = lib.mkOverride 50 [];
 
   # To be able to use the systemTarball to catch troubles.
-  boot.crashDump = {
-    enable = true;
-    kernelPackages = pkgs.linuxPackages_3_4;
-  };
+  boot.crashDump.enable = true;
 
   # No grub for the tarball.
   boot.loader.grub.enable = false;
