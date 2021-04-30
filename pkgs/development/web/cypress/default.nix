@@ -1,12 +1,12 @@
-{ stdenv, lib, fetchzip, autoPatchelfHook, xorg, gtk2, gnome2, gtk3, nss, alsaLib, udev, unzip, wrapGAppsHook }:
+{ stdenv, lib, fetchzip, autoPatchelfHook, xorg, gtk2, gnome2, gtk3, nss, alsaLib, udev, unzip, wrapGAppsHook, mesa }:
 
 stdenv.mkDerivation rec {
   pname = "cypress";
-  version = "7.0.0";
+  version = "7.1.0";
 
   src = fetchzip {
     url = "https://cdn.cypress.io/desktop/${version}/linux-x64/cypress.zip";
-    sha256 = "0ad578fqbijw8yf0c92c33inpqam1cfhbwcwinzlmc22h0d4bv5h";
+    sha256 = "1m52v6hhblrjji9c5885bn5qq0xlaw36krbmqfac7fhgsxmkxd2h";
   };
 
   # don't remove runtime deps
@@ -18,6 +18,7 @@ stdenv.mkDerivation rec {
     libXScrnSaver libXdamage libXtst libxshmfence
   ] ++ [
     nss gtk2 alsaLib gnome2.GConf gtk3
+    mesa # for libgbm
   ];
 
   runtimeDependencies = [ (lib.getLib udev) ];

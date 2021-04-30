@@ -64,7 +64,7 @@ self: super: {
       name = "git-annex-${super.git-annex.version}-src";
       url = "git://git-annex.branchable.com/";
       rev = "refs/tags/" + super.git-annex.version;
-      sha256 = "13n62v3cdkx23fywdccczcr8vsf0vmjbimmgin766bf428jlhh6h";
+      sha256 = "1wig8nw2rxgq86y88m1f1qf93z5yckidf1cs33ribmhqa1hs300p";
     };
   }).override {
     dbus = if pkgs.stdenv.isLinux then self.dbus else null;
@@ -85,7 +85,6 @@ self: super: {
   kademlia = dontCheck super.kademlia;
 
   # Tests require older versions of tasty.
-  cborg = (doJailbreak super.cborg).override { base16-bytestring = self.base16-bytestring_0_1_1_7; };
   hzk = dontCheck super.hzk;
   resolv = doJailbreak super.resolv;
   tdigest = doJailbreak super.tdigest;
@@ -285,7 +284,10 @@ self: super: {
   hsbencher = dontCheck super.hsbencher;
   hsexif = dontCheck super.hsexif;
   hspec-server = dontCheck super.hspec-server;
-  HTF = dontCheck super.HTF;
+  HTF = overrideCabal super.HTF (orig: {
+    # The scripts in scripts/ are needed to build the test suite.
+    preBuild = "patchShebangs --build scripts";
+  });
   htsn = dontCheck super.htsn;
   htsn-import = dontCheck super.htsn-import;
   http-link-header = dontCheck super.http-link-header; # non deterministic failure https://hydra.nixos.org/build/75041105
@@ -326,6 +328,7 @@ self: super: {
   optional = dontCheck super.optional;
   orgmode-parse = dontCheck super.orgmode-parse;
   os-release = dontCheck super.os-release;
+  parameterized = dontCheck super.parameterized; # https://github.com/louispan/parameterized/issues/2
   persistent-redis = dontCheck super.persistent-redis;
   pipes-extra = dontCheck super.pipes-extra;
   pipes-websockets = dontCheck super.pipes-websockets;
@@ -1242,22 +1245,7 @@ self: super: {
   patch = doJailbreak super.patch;
 
   # Tests disabled and broken override needed because of missing lib chrome-test-utils: https://github.com/reflex-frp/reflex-dom/issues/392
-  reflex-dom-core = doDistribute (unmarkBroken (dontCheck (appendPatch (doJailbreak super.reflex-dom-core) (pkgs.fetchpatch {
-    url = https://github.com/reflex-frp/reflex-dom/commit/6aed7b7ebb70372778f1a29a724fcb4de815ba04.patch;
-    sha256 = "1g7lgwj7rpziilif2gian412iy05gqbzwx9w0m6ajq3clxs5zs7l";
-    stripLen = 2;
-    extraPrefix = "";
-    includes = ["reflex-dom-core.cabal" ];
-  }))));
-
-  # Tests disabled and broken override needed because of missing lib chrome-test-utils: https://github.com/reflex-frp/reflex-dom/issues/392
-  reflex-dom = appendPatch super.reflex-dom (pkgs.fetchpatch {
-    url = https://github.com/reflex-frp/reflex-dom/commit/6aed7b7ebb70372778f1a29a724fcb4de815ba04.patch;
-    sha256 = "1ndqw5r85axynmx55ld6qr8ik1i1mkh6wrnkzpxbwyil2ms8mxn0";
-    stripLen = 2;
-    extraPrefix = "";
-    includes = ["reflex-dom.cabal" ];
-  });
+  reflex-dom-core = doDistribute (unmarkBroken (dontCheck (doJailbreak super.reflex-dom-core)));
 
   # add unreleased commit fixing version constraint as a patch
   # Can be removed if https://github.com/lpeterse/haskell-utc/issues/8 is resolved
@@ -1475,14 +1463,6 @@ self: super: {
   # https://github.com/obsidiansystems/dependent-sum/issues/55
   dependent-sum = doJailbreak super.dependent-sum;
 
-  # Overspecified constraint on 'constraints'. Kinda funny, huh?
-  dependent-sum-aeson-orphans = appendPatch (doJailbreak super.dependent-sum-aeson-orphans) (pkgs.fetchpatch {
-    # 2020-11-18: https://github.com/obsidiansystems/dependent-sum-aeson-orphans/pull/9
-    # Bump version bounds for ghc 8.10
-    url = https://github.com/obsidiansystems/dependent-sum-aeson-orphans/commit/e1f5898116222a1bc557d41f3395066f83736093.patch;
-    sha256 = "01fj29xdblxpz4drasaygf9875fipylpj8w164lb0cszd1vmqwnb";
-  });
-
   # 2020-11-18: https://github.com/srid/rib/issues/169
   # aeson bound out of sync
   rib-core = doJailbreak super.rib-core;
@@ -1491,20 +1471,8 @@ self: super: {
   # base upper bound is incompatible with ghc 8.10
   neuron = doJailbreak super.neuron;
 
-  reflex = dontCheck (doJailbreak (appendPatches super.reflex [
-    # https://github.com/reflex-frp/reflex/pull/444
-    # Fixes for ghc 8.10
-    (pkgs.fetchpatch {
-      url = https://github.com/reflex-frp/reflex/commit/d230632427fc1b7031163567c97f20050610c122.patch;
-      sha256 = "0gafqqi6q16m5y4mrc2f7lhahmazvcbiadn2v84y9p3zvx2v26xy";
-    })
-    # https://github.com/reflex-frp/reflex/pull/444
-    # Bound bumps for ghc 8.10
-    (pkgs.fetchpatch {
-      url = https://patch-diff.githubusercontent.com/raw/reflex-frp/reflex/pull/448.patch;
-      sha256 = "0a8gcq9g8dyyafkvs54mi3fnisff20r0x0qzmhxcp9md61nkf7gq";
-    })
-  ]));
+  # 2020-04-16: https://github.com/reflex-frp/reflex/issues/449
+  reflex = dontCheck (doJailbreak super.reflex);
 
   # 2020-11-19: jailbreaking because of pretty-simple bound out of date
   # https://github.com/kowainik/stan/issues/408
@@ -1563,9 +1531,9 @@ self: super: {
   );
 
   # 2020-12-05: http-client is fixed on too old version
-  essence-of-live-coding-warp = super.essence-of-live-coding-warp.override {
-    http-client = self.http-client_0_7_6;
-  };
+  essence-of-live-coding-warp = doJailbreak (super.essence-of-live-coding-warp.override {
+    http-client = self.http-client_0_7_8;
+  });
 
   # 2020-12-06: Restrictive upper bounds w.r.t. pandoc-types (https://github.com/owickstrom/pandoc-include-code/issues/27)
   pandoc-include-code = doJailbreak super.pandoc-include-code;
@@ -1810,5 +1778,16 @@ self: super: {
   # 2021-04-09: too strict time bound
   # PR pending https://github.com/zohl/cereal-time/pull/2
   cereal-time = doJailbreak super.cereal-time;
+
+  # 2021-04-16: too strict bounds on QuickCheck and tasty
+  # https://github.com/hasufell/lzma-static/issues/1
+  lzma-static = doJailbreak super.lzma-static;
+
+  # Fix haddock errors: https://github.com/koalaman/shellcheck/issues/2216
+  ShellCheck = appendPatch super.ShellCheck (pkgs.fetchpatch {
+    url = "https://github.com/koalaman/shellcheck/commit/9e60b3ea841bcaf48780bfcfc2e44aa6563a62de.patch";
+    sha256 = "1vmg8mmmnph34x7y0mhkcd5nzky8f1rh10pird750xbkp9zlk099";
+    excludes = ["test/buildtest"];
+  });
 
 } // import ./configuration-tensorflow.nix {inherit pkgs haskellLib;} self super

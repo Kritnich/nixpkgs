@@ -23,9 +23,22 @@ let
     # Override the version of some packages pinned in Home Assistant's setup.py
 
     # Pinned due to API changes in astral>=2.0, required by the sun/moon plugins
-    # https://github.com/home-assistant/core/issues/36636
+    # https://github.com/home-assistant/core/pull/48573; Remove >= 2021.5
     (mkOverride "astral" "1.10.1"
       "d2a67243c4503131c856cafb1b1276de52a86e5b8a1d507b7e08bee51cb67bf1")
+
+    # Pinned due to API changes in brother>=1.0, remove >= 2021.5
+    (self: super: {
+      brother = super.brother.overridePythonAttrs (oldAttrs: rec {
+        version = "0.2.2";
+        src = fetchFromGitHub {
+          owner = "bieniu";
+          repo = "brother";
+          rev = version;
+          sha256 = "sha256-vIefcL3K3ZbAUxMFM7gbbTFdrnmufWZHcq4OA19SYXE=";
+        };
+      });
+    })
 
     # Pinned due to API changes in iaqualink>=2.0, remove after
     # https://github.com/home-assistant/core/pull/48137 was merged
@@ -42,7 +55,16 @@ let
       });
     })
 
+    # Pinned due to API changes in pyjwt>=2.0
+    (mkOverride "pyjwt" "1.7.1"
+      "15hflax5qkw1v6nssk1r0wkj83jgghskcmn875m3wgvpzdvajncd")
+
+    # Pinned due to API changes in pykmtronic>=0.2.0
+    (mkOverride "pykmtronic" "0.0.3"
+      "sha256-8bxn27DU1XUQUxQFJklEge29DHx1DMu7pJG4hVE1jDU=")
+
     # Pinned due to API changes in pylilterbot>=2021.3.0
+    # https://github.com/home-assistant/core/pull/48300; Remove >= 2021.5
     (self: super: {
       pylitterbot = super.pylitterbot.overridePythonAttrs (oldAttrs: rec {
         version = "2021.2.8";
@@ -108,7 +130,7 @@ let
   extraBuildInputs = extraPackages py.pkgs;
 
   # Don't forget to run parse-requirements.py after updating
-  hassVersion = "2021.4.4";
+  hassVersion = "2021.4.6";
 
 in with py.pkgs; buildPythonApplication rec {
   pname = "homeassistant";
@@ -127,7 +149,7 @@ in with py.pkgs; buildPythonApplication rec {
     owner = "home-assistant";
     repo = "core";
     rev = version;
-    sha256 = "1p36ymjhirl32ax3xxdg9ia089jw1klww5imq18r6ksajafr78ys";
+    sha256 = "1s1slwcqls2prz9kgyhggs8xi3x7ghwdi33j983kvpg0gva7d2f0";
   };
 
   # leave this in, so users don't have to constantly update their downstream patch handling
@@ -204,12 +226,14 @@ in with py.pkgs; buildPythonApplication rec {
     "axis"
     "bayesian"
     "binary_sensor"
+    "brother"
     "caldav"
     "calendar"
     "camera"
     "cast"
     "climate"
     "cloud"
+    "comfoconnect"
     "command_line"
     "config"
     "configurator"
@@ -226,6 +250,7 @@ in with py.pkgs; buildPythonApplication rec {
     "devolo_home_control"
     "dhcp"
     "discovery"
+    "dsmr"
     "econet"
     "emulated_hue"
     "esphome"
@@ -250,6 +275,7 @@ in with py.pkgs; buildPythonApplication rec {
     "hddtemp"
     "history"
     "history_stats"
+    "home_connect"
     "home_plus_control"
     "homekit"
     "homekit_controller"
@@ -259,6 +285,7 @@ in with py.pkgs; buildPythonApplication rec {
     "html5"
     "http"
     "hue"
+    "hyperion"
     "iaqualink"
     "ifttt"
     "image"
@@ -273,6 +300,7 @@ in with py.pkgs; buildPythonApplication rec {
     "intent_script"
     "ipp"
     "kmtronic"
+    "knx"
     "kodi"
     "light"
     "litterrobot"
@@ -304,7 +332,10 @@ in with py.pkgs; buildPythonApplication rec {
     "notify"
     "notion"
     "number"
+    "nx584"
     "omnilogic"
+    "ondilo_ico"
+    "openerz"
     "ozw"
     "panel_custom"
     "panel_iframe"
@@ -321,6 +352,7 @@ in with py.pkgs; buildPythonApplication rec {
     "rest_command"
     "rituals_perfume_genie"
     "rmvtransport"
+    "roku"
     "rss_feed_template"
     "ruckus_unleashed"
     "safe_mode"
@@ -334,7 +366,10 @@ in with py.pkgs; buildPythonApplication rec {
     "simulated"
     "sleepiq"
     "sma"
+    "smhi"
     "sensor"
+    "slack"
+    "smartthings"
     "smarttub"
     "smtp"
     "smappee"
@@ -372,10 +407,12 @@ in with py.pkgs; buildPythonApplication rec {
     "wled"
     "workday"
     "worldclock"
+    "yeelight"
     "zeroconf"
     "zha"
     "zone"
     "zwave"
+    "zwave_js"
   ];
 
   pytestFlagsArray = [

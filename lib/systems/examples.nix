@@ -217,6 +217,7 @@ rec {
     sdkVer = "14.3";
     xcodeVer = "12.3";
     xcodePlatform = "iPhoneSimulator";
+    darwinPlatform = "ios-simulator";
     useiOSPrebuilt = true;
   };
 
@@ -226,6 +227,7 @@ rec {
     sdkVer = "14.3";
     xcodeVer = "12.3";
     xcodePlatform = "iPhoneSimulator";
+    darwinPlatform = "ios-simulator";
     useiOSPrebuilt = true;
   };
 
@@ -248,9 +250,17 @@ rec {
 
   # BSDs
 
-  amd64-netbsd = {
+  amd64-netbsd = lib.warn "The amd64-netbsd system example is deprecated. Use x86_64-netbsd instead." x86_64-netbsd;
+
+  x86_64-netbsd = {
     config = "x86_64-unknown-netbsd";
     libc = "nblibc";
+  };
+
+  x86_64-netbsd-llvm = {
+    config = "x86_64-unknown-netbsd";
+    libc = "nblibc";
+    useLLVM = true;
   };
 
   #

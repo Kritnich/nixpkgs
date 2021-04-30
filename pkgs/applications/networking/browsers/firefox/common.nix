@@ -6,10 +6,10 @@
 , libjpeg, zlib, dbus, dbus-glib, bzip2, xorg
 , freetype, fontconfig, file, nspr, nss, nss_3_53
 , yasm, libGLU, libGL, sqlite, unzip, makeWrapper
-, hunspell, libXdamage, libevent, libstartup_notification
+, hunspell, libevent, libstartup_notification
 , libvpx_1_8
 , icu67, libpng, jemalloc, glib, pciutils
-, autoconf213, which, gnused, rustPackages, rustPackages_1_45
+, autoconf213, which, gnused, rustPackages
 , rust-cbindgen, nodejs, nasm, fetchpatch
 , gnum4
 , debugBuild ? false
@@ -22,7 +22,7 @@
 , pulseaudioSupport ? stdenv.isLinux, libpulseaudio
 , ffmpegSupport ? true
 , gtk3Support ? true, gtk2, gtk3, wrapGAppsHook
-, waylandSupport ? true, libxkbcommon
+, waylandSupport ? true, libxkbcommon, libdrm
 , ltoSupport ? (stdenv.isLinux && stdenv.is64bit), overrideCC, buildPackages
 , gssSupport ? true, libkrb5
 , pipewireSupport ? waylandSupport && webrtcSupport, pipewire
@@ -90,19 +90,13 @@ let
             then "/Applications/${binaryNameCapitalized}.app/Contents/MacOS"
             else "/bin";
 
-  # 78 ESR won't build with rustc 1.47
-  inherit (if lib.versionAtLeast ffversion "82" then rustPackages else rustPackages_1_45)
-    rustc cargo;
+  inherit (rustPackages) rustc cargo;
 
   # Darwin's stdenv provides the default llvmPackages version, match that since
   # clang LTO on Darwin is broken so the stdenv is not being changed.
-  # Target the LLVM version that rustc -Vv reports it is built with for LTO.
-  # rustPackages_1_45 -> LLVM 10, rustPackages -> LLVM 11
   llvmPackages = if stdenv.isDarwin
                  then buildPackages.llvmPackages
-                 else if lib.versionAtLeast rustc.llvm.version "11"
-                      then buildPackages.llvmPackages_11
-                      else buildPackages.llvmPackages_10;
+                 else buildPackages.llvmPackages_11;
 
   # When LTO for Darwin is fixed, the following will need updating as lld
   # doesn't work on it. For now it is fine since ltoSupport implies no Darwin.
@@ -161,6 +155,7 @@ buildStdenv.mkDerivation ({
     xorg.libX11 xorg.libXrender xorg.libXft xorg.libXt file
     xorg.pixman yasm libGLU libGL
     xorg.xorgproto
+    xorg.libXdamage
     xorg.libXext makeWrapper
     libevent libstartup_notification /* cairo */
     libpng jemalloc glib
@@ -175,7 +170,7 @@ buildStdenv.mkDerivation ({
   ++ lib.optional  pulseaudioSupport libpulseaudio # only headers are needed
   ++ lib.optional  gtk3Support gtk3
   ++ lib.optional  gssSupport libkrb5
-  ++ lib.optional  waylandSupport libxkbcommon
+  ++ lib.optionals waylandSupport [ libxkbcommon libdrm ]
   ++ lib.optional  pipewireSupport pipewire
   ++ lib.optional  (lib.versionAtLeast ffversion "82") gnum4
   ++ lib.optionals buildStdenv.isDarwin [ CoreMedia ExceptionHandling Kerberos

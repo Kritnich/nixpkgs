@@ -4,7 +4,7 @@
 , pythonOlder
 , decorator
 , requests
-, typing
+, typing ? null
 , configparser
 , click
 , freezegun
@@ -17,11 +17,11 @@
 
 buildPythonPackage rec {
   pname = "datadog";
-  version = "0.40.0";
+  version = "0.40.1";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "4bbd66a02bbcf9cd03ba05194d605a64c9efb7aed90d5e69c6ec42655c3c01a4";
+    sha256 = "438c1dde5462e68c5c792b7b4a1d87a0ddd970af3db31b3cf15980eed0c44311";
   };
 
   postPatch = ''
@@ -43,12 +43,11 @@ buildPythonPackage rec {
   ];
 
   disabledTestPaths = [
-    "tests/unit/dogstatsd/test_statsd.py" # does not work in sandbox
+    "tests/performance"
   ];
 
   disabledTests = [
     "test_default_settings_set"
-    "test_threadstats_thread_safety"
   ];
 
   pythonImportsCheck = [ "datadog" ];

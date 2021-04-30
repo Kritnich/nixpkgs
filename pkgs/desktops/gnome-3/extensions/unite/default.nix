@@ -1,13 +1,14 @@
 { lib, stdenv, gnome3, fetchFromGitHub, xprop, glib }:
+
 stdenv.mkDerivation rec {
   pname = "gnome-shell-extension-unite";
-  version = "49";
+  version = "53";
 
   src = fetchFromGitHub {
     owner = "hardpixel";
     repo = "unite-shell";
     rev = "v${version}";
-    sha256 = "12kjljw253hshaz6x886kg3mc93lb4pxwd05qihww6m5k4lqjcy5";
+    sha256 = "0fw9wqf362h2yd67fhgbhqx0b2fwcl25wxmb92dqwigxjcj0dnw6";
   };
 
   uuid = "unite@hardpixel.eu";

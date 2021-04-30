@@ -47,7 +47,7 @@ in
   buildkite-agents = handleTest ./buildkite-agents.nix {};
   caddy = handleTest ./caddy.nix {};
   cadvisor = handleTestOn ["x86_64-linux"] ./cadvisor.nix {};
-  cage = handleTest ./cage.nix {};
+  cage = handleTestOn ["x86_64-linux"] ./cage.nix {};
   cagebreak = handleTest ./cagebreak.nix {};
   calibre-web = handleTest ./calibre-web.nix {};
   cassandra_2_1 = handleTest ./cassandra.nix { testPackage = pkgs.cassandra_2_1; };
@@ -75,6 +75,7 @@ in
   containers-ip = handleTest ./containers-ip.nix {};
   containers-macvlans = handleTest ./containers-macvlans.nix {};
   containers-names = handleTest ./containers-names.nix {};
+  containers-nested = handleTest ./containers-nested.nix {};
   containers-physical_interfaces = handleTest ./containers-physical_interfaces.nix {};
   containers-portforward = handleTest ./containers-portforward.nix {};
   containers-reloadable = handleTest ./containers-reloadable.nix {};
@@ -185,6 +186,7 @@ in
   iodine = handleTest ./iodine.nix {};
   ipfs = handleTest ./ipfs.nix {};
   ipv6 = handleTest ./ipv6.nix {};
+  iscsi-root = handleTest ./iscsi-root.nix {};
   jackett = handleTest ./jackett.nix {};
   jellyfin = handleTest ./jellyfin.nix {};
   jenkins = handleTest ./jenkins.nix {};
@@ -262,6 +264,7 @@ in
   nat.standalone = handleTest ./nat.nix { withFirewall = false; };
   ncdns = handleTest ./ncdns.nix {};
   ndppd = handleTest ./ndppd.nix {};
+  nebula = handleTest ./nebula.nix {};
   neo4j = handleTest ./neo4j.nix {};
   netdata = handleTest ./netdata.nix {};
   networking.networkd = handleTest ./networking.nix { networkd = true; };
@@ -321,6 +324,7 @@ in
   pleroma = handleTestOn [ "x86_64-linux" "aarch64-linux" ] ./pleroma.nix {};
   plikd = handleTest ./plikd.nix {};
   plotinus = handleTest ./plotinus.nix {};
+  podgrab = handleTest ./podgrab.nix {};
   podman = handleTestOn ["x86_64-linux"] ./podman.nix {};
   pomerium = handleTestOn ["x86_64-linux"] ./pomerium.nix {};
   postfix = handleTest ./postfix.nix {};
@@ -341,7 +345,6 @@ in
   proxy = handleTest ./proxy.nix {};
   pt2-clone = handleTest ./pt2-clone.nix {};
   qboot = handleTestOn ["x86_64-linux" "i686-linux"] ./qboot.nix {};
-  quagga = handleTest ./quagga.nix {};
   quorum = handleTest ./quorum.nix {};
   rabbitmq = handleTest ./rabbitmq.nix {};
   radarr = handleTest ./radarr.nix {};

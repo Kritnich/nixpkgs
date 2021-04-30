@@ -1717,11 +1717,11 @@ lib.makeScope newScope (self: with self; {
   }) {};
 
   xf86inputlibinput = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, libinput, xorgserver }: stdenv.mkDerivation {
-    name = "xf86-input-libinput-1.0.0";
+    name = "xf86-input-libinput-1.0.1";
     builder = ./builder.sh;
     src = fetchurl {
-      url = "mirror://xorg/individual/driver/xf86-input-libinput-1.0.0.tar.bz2";
-      sha256 = "0x4ay9y2clm2bql3myqnvhmikjbpzy95c800qiva8pg6dbvc4mgg";
+      url = "mirror://xorg/individual/driver/xf86-input-libinput-1.0.1.tar.bz2";
+      sha256 = "0nr4r9x8c7y1l0ipivjch5zps093mxmg2nqmfn2934am26fc9ppx";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     nativeBuildInputs = [ pkg-config ];
@@ -2692,11 +2692,11 @@ lib.makeScope newScope (self: with self; {
   }) {};
 
   xorgserver = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, openssl, libX11, libXau, libXaw, libxcb, xcbutil, xcbutilwm, xcbutilimage, xcbutilkeysyms, xcbutilrenderutil, libXdmcp, libXfixes, libxkbfile, libXmu, libXpm, libXrender, libXres, libXt }: stdenv.mkDerivation {
-    name = "xorg-server-1.20.10";
+    name = "xorg-server-1.20.11";
     builder = ./builder.sh;
     src = fetchurl {
-      url = "mirror://xorg/individual/xserver/xorg-server-1.20.10.tar.bz2";
-      sha256 = "16bwrf0ag41l7jbrllbix8z6avc5yimga7ihvq4ch3a5hb020x4p";
+      url = "mirror://xorg/individual/xserver/xorg-server-1.20.11.tar.bz2";
+      sha256 = "0jacqgin8kcyy8fyv0lhgb4if8g9hp60rm3ih3s1mgps7xp7jk4i";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     nativeBuildInputs = [ pkg-config ];

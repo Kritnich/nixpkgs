@@ -11,7 +11,7 @@
 /.github/CODEOWNERS @edolstra
 
 # GitHub actions
-/.github/workflows @Mic92 @zowoq
+/.github/workflows @NixOS/Security @Mic92 @zowoq
 /.github/workflows/merge-staging @FRidh
 
 # EditorConfig
@@ -125,9 +125,6 @@
 
 # Jetbrains
 /pkgs/applications/editors/jetbrains @edwtjo
-
-# Eclipse
-/pkgs/applications/editors/eclipse @rycee
 
 # Licenses
 /lib/licenses.nix @alyssais

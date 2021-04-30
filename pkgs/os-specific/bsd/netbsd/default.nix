@@ -61,7 +61,7 @@ let
     builder = ./builder.sh;
 
     meta = with lib; {
-      maintainers = with maintainers; [matthewbauer];
+      maintainers = with maintainers; [ matthewbauer qyliss ];
       platforms = platforms.unix;
       license = licenses.bsd2;
     };
@@ -484,13 +484,6 @@ let
     '';
   };
 
-  libkern = mkDerivation {
-    path = "lib/libkern";
-    version = "8.0";
-    sha256 = "1wirqr9bms69n4b5sr32g1b1k41hcamm7c9n7i8c440m73r92yv4";
-    meta.platforms = lib.platforms.netbsd;
-  };
-
   column = mkDerivation {
     path = "usr.bin/column";
     version = "8.0";
@@ -664,7 +657,7 @@ let
     path = "share/man";
     noCC = true;
     version = "8.0";
-    sha256 = "0d34b3irjbqsqfk8v8aaj36fjyvwyx410igl26jcx2ryh3ispch0";
+    sha256 = "0yp48syf3y5psm0mymxp6va6spym5izjym0ybr628iqwji21cqdz";
     makeFlags = [ "FILESDIR=$(out)/share" ];
   };
   #

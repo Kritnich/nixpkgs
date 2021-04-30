@@ -49,6 +49,7 @@
   ./hardware/i2c.nix
   ./hardware/sensor/hddtemp.nix
   ./hardware/sensor/iio.nix
+  ./hardware/keyboard/teck.nix
   ./hardware/keyboard/zsa.nix
   ./hardware/ksm.nix
   ./hardware/ledger.nix
@@ -92,6 +93,7 @@
   ./i18n/input-method/ibus.nix
   ./i18n/input-method/nabi.nix
   ./i18n/input-method/uim.nix
+  ./i18n/input-method/kime.nix
   ./installer/tools/tools.nix
   ./misc/assertions.nix
   ./misc/crashdump.nix
@@ -131,6 +133,7 @@
   ./programs/file-roller.nix
   ./programs/firejail.nix
   ./programs/fish.nix
+  ./programs/flexoptix-app.nix
   ./programs/freetds.nix
   ./programs/fuse.nix
   ./programs/geary.nix
@@ -366,6 +369,7 @@
   ./services/games/minecraft-server.nix
   ./services/games/minetest-server.nix
   ./services/games/openarena.nix
+  ./services/games/quake3-server.nix
   ./services/games/teeworlds.nix
   ./services/games/terraria.nix
   ./services/hardware/acpid.nix
@@ -465,6 +469,7 @@
   ./services/misc/couchpotato.nix
   ./services/misc/devmon.nix
   ./services/misc/dictd.nix
+  ./services/misc/duckling.nix
   ./services/misc/dwm-status.nix
   ./services/misc/dysnomia.nix
   ./services/misc/disnix.nix
@@ -526,6 +531,7 @@
   ./services/misc/parsoid.nix
   ./services/misc/plex.nix
   ./services/misc/plikd.nix
+  ./services/misc/podgrab.nix
   ./services/misc/tautulli.nix
   ./services/misc/pinnwand.nix
   ./services/misc/pykms.nix
@@ -626,6 +632,7 @@
   ./services/network-filesystems/xtreemfs.nix
   ./services/network-filesystems/ceph.nix
   ./services/networking/3proxy.nix
+  ./services/networking/adguardhome.nix
   ./services/networking/amuled.nix
   ./services/networking/aria2.nix
   ./services/networking/asterisk.nix
@@ -697,6 +704,9 @@
   ./services/networking/iodine.nix
   ./services/networking/iperf3.nix
   ./services/networking/ircd-hybrid/default.nix
+  ./services/networking/iscsi/initiator.nix
+  ./services/networking/iscsi/root-initiator.nix
+  ./services/networking/iscsi/target.nix
   ./services/networking/iwd.nix
   ./services/networking/jicofo.nix
   ./services/networking/jitsi-videobridge.nix
@@ -728,6 +738,7 @@
   ./services/networking/nar-serve.nix
   ./services/networking/nat.nix
   ./services/networking/ndppd.nix
+  ./services/networking/nebula.nix
   ./services/networking/networkmanager.nix
   ./services/networking/nextdns.nix
   ./services/networking/nftables.nix
@@ -763,7 +774,6 @@
   ./services/networking/prayer.nix
   ./services/networking/privoxy.nix
   ./services/networking/prosody.nix
-  ./services/networking/quagga.nix
   ./services/networking/quassel.nix
   ./services/networking/quorum.nix
   ./services/networking/quicktun.nix

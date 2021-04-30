@@ -61,7 +61,7 @@
 , alsaSupport ? stdenv.isLinux, alsaLib
 , pulseaudioSupport ? stdenv.isLinux, libpulseaudio
 , gtk3Support ? true, gtk2, gtk3, wrapGAppsHook
-, waylandSupport ? true
+, waylandSupport ? true, libdrm
 , libxkbcommon, calendarSupport ? true
 
 # Use official trademarked branding.  Permission obtained at:
@@ -73,13 +73,13 @@ assert waylandSupport -> gtk3Support == true;
 
 stdenv.mkDerivation rec {
   pname = "thunderbird";
-  version = "78.9.1";
+  version = "78.10.0";
 
   src = fetchurl {
     url =
       "mirror://mozilla/thunderbird/releases/${version}/source/thunderbird-${version}.source.tar.xz";
     sha512 =
-      "3370ngycp6syvxfnindzz06xg39vb2knfi2zshsm87aqrapk52vmfbdagv5a85vwlmd2h5gd47zcmz2mj5360mcfxlc380hrqks69zs";
+      "0nywhw1y9g78fpfgmcp6vphdidpnhfxif18qx23j7p20ayymvi2gd3smm4qfr6rlb0dkzyk1vxc2dj47zd8169wlkvr6l1kfsgvrj49";
   };
 
   nativeBuildInputs = [
@@ -137,12 +137,13 @@ stdenv.mkDerivation rec {
     xorg.libXt
     xorg.pixman
     xorg.xorgproto
+    xorg.libXdamage
     zip
     zlib
   ] ++ lib.optional alsaSupport alsaLib
     ++ lib.optional gtk3Support gtk3
     ++ lib.optional pulseaudioSupport libpulseaudio
-    ++ lib.optional waylandSupport libxkbcommon;
+    ++ lib.optionals waylandSupport [ libxkbcommon libdrm ];
 
   NIX_CFLAGS_COMPILE =[
     "-I${glib.dev}/include/gio-unix-2.0"

@@ -1,6 +1,8 @@
 { lib, stdenv, callPackage, fetchurl
-, jdk, cmake, libxml2, zlib, python3, ncurses5
-, dotnet-sdk_3
+, jdk, cmake, zlib, python3
+, dotnet-sdk_5
+, autoPatchelfHook
+, libdbusmenu
 , vmopts ? null
 }:
 
@@ -25,6 +27,15 @@ let
         platforms = platforms.linux;
       };
     }).overrideAttrs (attrs: {
+      nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ optionals (stdenv.isLinux) [
+        autoPatchelfHook
+      ];
+      buildInputs = (attrs.buildInputs or []) ++ optionals (stdenv.isLinux) [
+        python3
+        stdenv.cc.cc
+        libdbusmenu
+      ];
+      dontAutoPatchelf = true;
       postFixup = (attrs.postFixup or "") + optionalString (stdenv.isLinux) ''
         (
           cd $out/clion-${version}
@@ -32,45 +43,7 @@ let
           rm -rf bin/cmake/linux
           ln -s ${cmake} bin/cmake/linux
 
-          lldbLibPath=$out/clion-${version}/bin/lldb/linux/lib
-          interp="$(cat $NIX_CC/nix-support/dynamic-linker)"
-          ln -s ${ncurses5.out}/lib/libtinfo.so.5 $lldbLibPath/libtinfo.so.5
-
-          patchelf --set-interpreter $interp \
-            --set-rpath "${lib.makeLibraryPath [ libxml2 zlib stdenv.cc.cc.lib ]}:$lldbLibPath" \
-            bin/lldb/linux/bin/lldb-server
-
-          for i in LLDBFrontend lldb lldb-argdumper; do
-            patchelf --set-interpreter $interp \
-              --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib ]}:$lldbLibPath" \
-              "bin/lldb/linux/bin/$i"
-          done
-
-          patchelf \
-            --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib ]}:$lldbLibPath" \
-            bin/lldb/linux/lib/python3.*/lib-dynload/zlib.cpython-*-x86_64-linux-gnu.so
-
-          patchelf \
-            --set-rpath "${lib.makeLibraryPath [ libxml2 zlib stdenv.cc.cc.lib python3 ]}:$lldbLibPath" \
-            bin/lldb/linux/lib/liblldb.so
-
-          gdbLibPath=$out/clion-${version}/bin/gdb/linux/lib
-          patchelf \
-            --set-rpath "$gdbLibPath" \
-            bin/gdb/linux/lib/python3.*/lib-dynload/zlib.cpython-*-x86_64-linux-gnu.so
-          patchelf --set-interpreter $interp \
-            --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib zlib ]}:$gdbLibPath" \
-            bin/gdb/linux/bin/gdb
-          patchelf --set-interpreter $interp \
-            --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib ]}:$gdbLibPath" \
-            bin/gdb/linux/bin/gdbserver
-
-          patchelf --set-interpreter $interp \
-            --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib zlib ]}" \
-            bin/clang/linux/clangd
-          patchelf --set-interpreter $interp \
-            --set-rpath "${lib.makeLibraryPath [ stdenv.cc.cc.lib zlib ]}" \
-            bin/clang/linux/clang-tidy
+          autoPatchelf $PWD/bin
 
           wrapProgram $out/bin/clion \
             --set CL_JDK "${jdk}"
@@ -144,7 +117,7 @@ let
       inherit name version src wmClass jdk;
       product = "MPS";
       meta = with lib; {
-        homepage = https://www.jetbrains.com/mps/;
+        homepage = "https://www.jetbrains.com/mps/";
         inherit license description;
         longDescription = ''
           A metaprogramming system which uses projectional editing
@@ -223,7 +196,7 @@ let
       patchPhase = lib.optionalString (!stdenv.isDarwin) (attrs.patchPhase + ''
         rm -rf lib/ReSharperHost/linux-x64/dotnet
         mkdir -p lib/ReSharperHost/linux-x64/dotnet/
-        ln -s ${dotnet-sdk_3}/bin/dotnet lib/ReSharperHost/linux-x64/dotnet/dotnet
+        ln -s ${dotnet-sdk_5}/bin/dotnet lib/ReSharperHost/linux-x64/dotnet/dotnet
       '');
     });
 
@@ -386,12 +359,12 @@ in
 
   rider = buildRider rec {
     name = "rider-${version}";
-    version = "2021.1"; /* updated by script */
+    version = "2021.1.1"; /* updated by script */
     description = "A cross-platform .NET IDE based on the IntelliJ platform and ReSharper";
     license = lib.licenses.unfree;
     src = fetchurl {
       url = "https://download.jetbrains.com/rider/JetBrains.Rider-${version}.tar.gz";
-      sha256 = "089j52sig2ac21v6zl9mvb7x4sr9c428nn930b41y3qd6bg52xxx"; /* updated by script */
+      sha256 = "00kdbsjw9hmq7x94pjscslv0b412g8l0jbvyi7jiyay8xc6wiaaj"; /* updated by script */
     };
     wmClass = "jetbrains-rider";
     update-channel = "Rider RELEASE";

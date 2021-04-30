@@ -11,19 +11,18 @@ let
     else if isAarch64 then "arm64"
     else lib.warn "Unsupported architecture, some image processing features might be unavailable" "unknown";
   musl = lib.optionalString stdenv.hostPlatform.isMusl
-    (if (arch != "x64")
-      then lib.warn "Some image processing features might be unavailable for non x86-64 with Musl" "musl-"
-      else "musl-");
+    (lib.warnIf (arch != "x64") "Some image processing features might be unavailable for non x86-64 with Musl"
+      "musl-");
   runtimeDir = "${os}-${musl}${arch}";
 
 in stdenv.mkDerivation rec {
   pname = "jellyfin";
-  version = "10.7.1";
+  version = "10.7.2";
 
   # Impossible to build anything offline with dotnet
   src = fetchurl {
     url = "https://repo.jellyfin.org/releases/server/portable/versions/stable/combined/${version}/jellyfin_${version}.tar.gz";
-    sha256 = "sha256-pgFksZz0sD73uZDyUIhdFCgHPo67ZZiwklafyemJFGs=";
+    sha256 = "sha256-l2tQmKez06cekq/QLper+OrcSU/0lWpZ85xY2wZcK1s=";
   };
 
   nativeBuildInputs = [
