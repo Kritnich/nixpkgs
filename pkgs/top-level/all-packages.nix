@@ -489,6 +489,8 @@ with pkgs;
 
   fetchMavenArtifact = callPackage ../build-support/fetchmavenartifact { };
 
+  fetchSteamDepot = callPackage ../build-support/fetchsteamdepot { };
+
   inherit (callPackage ../build-support/node/fetch-yarn-deps { })
     prefetch-yarn-deps
     fetchYarnDeps;
@@ -30451,6 +30453,8 @@ with pkgs;
   prboom = callPackage ../games/prboom { };
 
   pysolfc = python3Packages.callPackage ../games/pysolfc { };
+
+  pz-server = callPackage ../games/pz-server { };
 
   qqwing = callPackage ../games/qqwing { };
 
