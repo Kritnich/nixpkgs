@@ -43,7 +43,9 @@ in stdenv.mkDerivation rec {
   };
 
   dontUnpack = true;
+
   dontConfigure = true;
+
   dontBuild = true;
 
   nativeBuildInputs = [
@@ -58,12 +60,13 @@ in stdenv.mkDerivation rec {
     shareDir = "$out/share/pz-server";
   in ''
     mkdir -p ${shareDir}
-    cp -r $src/* ${shareDir}
+    cp -Lr $src/* ${shareDir}
 
     makeWrapper ${jre}/bin/java $out/bin/pz-server \
     --run "cd ${shareDir}" \
     --prefix LD_PRELOAD : libjsig.so \
-    --add-flags "-Dzomboid.steam=0 -Dzomboid.znetlog=1" \
+    --prefix LD_LIBRARY_PATH : ${shareDir}/linux64 \
+    --add-flags "-Dzomboid.steam=1 -Dzomboid.znetlog=1" \
     --add-flags "-Djava.awt.headless=true" \
     --add-flags "-Djava.library.path=${shareDir}/.:${shareDir}/natives:${shareDir}/linux64" \
     --add-flags "-Djava.security.egd=file:/dev/urandom" \
